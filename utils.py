@@ -2,6 +2,20 @@ import cv2
 import numpy # Hint to PyInstaller
 
 
+# Try to determine whether we are on Raspberry Pi.
+IS_RASPBERRY_PI = False
+try:
+    with open('/proc/cpuinfo') as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith('Hardware') and \
+                    line.endswith('BCM2708'):
+                IS_RASPBERRY_PI = True
+                break
+except:
+    pass
+
+
 def fourCharsToInt(s):
     import binascii
     return int(binascii.hexlify(s), 16)
@@ -55,12 +69,22 @@ def sendEmail(fromAddr, toAddrList, ccAddrList, subject, message,
     server.quit()
     return problems
 
-def wxBitmapFromCvImage(image):
-    import wx
-    image = cv2.cvtColor(image, cv2.cv.CV_BGR2RGB)
-    h, w = image.shape[:2]
-    bitmap = wx.BitmapFromBuffer(w, h, image)
-    return bitmap
+if IS_RASPBERRY_PI:
+    def wxBitmapFromCvImage(image):
+        import wx
+        image = cv2.cvtColor(image, cv2.cv.CV_BGR2RGB)
+        h, w = image.shape[:2]
+        wxImage = wx.ImageFromBuffer(w, h, image)
+        bitmap = wx.BitmapFromImage(wxImage)
+        return bitmap
+else:
+    def wxBitmapFromCvImage(image):
+        import wx
+        image = cv2.cvtColor(image, cv2.cv.CV_BGR2RGB)
+        h, w = image.shape[:2]
+        # The following conversion fails on Raspberry Pi.
+        bitmap = wx.BitmapFromBuffer(w, h, image)
+        return bitmap
 
 def pyInstallerResourcePath(relativePath):
     import os

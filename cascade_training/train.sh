@@ -3,8 +3,14 @@
 vec=binary_description
 info=positive_description.txt
 bg=negative_description.txt
-data=haarcascade_frontalcatface/
-dst=../cascades/haarcascade_frontalcatface.xml
+
+featureType=LBP
+data=lbpcascade_frontalcatface/
+dst=../cascades/lbpcascade_frontalcatface.xml
+
+#featureType=HAAR
+#data=haarcascade_frontalcatface/
+#dst=../cascades/haarcascade_frontalcatface.xml
 
 # Set numPosTotal to be the line count of info.
 numPosTotal=`wc -l < $info`
@@ -28,6 +34,7 @@ opencv_createsamples -vec "$vec" -info "$info" -bg "$bg" \
         -num "$numPosTotal"
 opencv_traincascade -data "$data" -vec "$vec" -bg "$bg" \
         -numPos "$numPosPerStage" -numNeg "$numNegPerStage" \
-        -numStages "$numStages" -minHitRate "$minHitRate"
+        -numStages "$numStages" -minHitRate "$minHitRate" \
+        -featureType "$featureType"
 
 cp "$data/cascade.xml" "$dst"

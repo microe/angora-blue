@@ -1,8 +1,14 @@
 set vec=binary_description
 set info=positive_description.txt
 set bg=negative_description.txt
-set data=haarcascade_frontalcatface\
-set dst=..\cascades\haarcascade_frontalcatface.xml
+
+set featureType=LBP
+set data=lbpcascade_frontalcatface\
+set dst=..\cascades\lbpcascade_frontalcatface.xml
+
+REM set featureType=HAAR
+REM set data=haarcascade_frontalcatface\
+REM set dst=..\cascades\haarcascade_frontalcatface.xml
 
 REM Set numPosTotal to be the line count of info.
 for /f %c in ('find /c /v "" ^< "%info%"') do set numPosTotal=%c
@@ -22,6 +28,7 @@ opencv_createsamples -vec "%vec%" -info "%info%" -bg "%bg%" ^
         -num "%numPosTotal%"
 opencv_traincascade -data "%data%" -vec "%vec%" -bg "%bg%" ^
         -numPos "%numPosPerStage%" -numNeg "%numNegPerStage%" ^
-        -numStages "%numStages%" -minHitRate "%minHitRate%"
+        -numStages "%numStages%" -minHitRate "%minHitRate%" ^
+        -featureType "%featureType%"
 
 cp "%data%\cascade.xml" "%dst%"

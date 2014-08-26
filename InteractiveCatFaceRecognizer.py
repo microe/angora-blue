@@ -9,6 +9,7 @@ def main():
     lbphPath = utils.pyInstallerResourcePath(
             'recognizers/lbph_cat_faces.xml')
     classifierPath = utils.pyInstallerResourcePath(
+            #'cascades/lbpcascade_frontalcatface.xml')
             'cascades/haarcascade_frontalcatface.xml')
     interactiveRecognizer = InteractiveRecognizer(
             lbphPath, classifierPath,
